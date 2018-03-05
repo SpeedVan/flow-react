@@ -1,0 +1,27 @@
+{
+  "name": "flow-react",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "react": "^16.2.0",
+    "react-app-rewired": "^1.4.1",
+    "react-dom": "^16.2.0",
+    "react-redux": "^5.0.7",
+    "react-scripts": "1.1.1",
+    "redux": "^3.7.2",
+    "redux-thunk": "^2.2.0"
+  },
+  "scripts": {
+    "start2": "react-scripts start",
+    "start": "react-app-rewired start",
+    "build2": "react-scripts build",
+    "build": "react-app-rewired build",
+    "test2": "react-scripts test --env=jsdom",
+    "test": "react-app-rewired test --env=jsdom",
+    "eject2": "react-scripts eject",
+    "eject": "react-app-rewired eject"
+  },
+  "devDependencies": {
+    "redux-devtools": "^3.4.1"
+  }
+}
