@@ -9,7 +9,7 @@ const separate = (funcJSON) => arr =>{
 }
 
 const headTail = arr => {
-    if (arr.length == 0) return ({head:null, tail:[]});
+    if (arr.length === 0) return ({head:null, tail:[]});
     const head = arr[0];
     const tail = arr.slice(1);
     return ({head: head, tail: tail});
@@ -27,7 +27,7 @@ const setWith = (init, arr) => arr.reduce((r,i)=>r.contains(i)?r:r.concat([i]),i
 
 const set = arr => setWith([], arr);
 
-const remove = (arr, e) => arr.reduce((r,i)=>e==i?r:r.concat([i]),[])
+const remove = (arr, e) => arr.reduce((r,i)=>e===i?r:r.concat([i]),[])
 
 const union = (...arrs) => arrs.reduce((r,arr)=>setWith(r,arr),[]);
 

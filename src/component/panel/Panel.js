@@ -1,4 +1,11 @@
 import FlowPanel from './FlowPanel';
-const {React} = require('@/common/react/Prelude');
+const {React, connect} = require('@/common/react/Prelude');
+//meaning flows
 
-export default (props)=>props.data.map(i=><FlowPanel data={i}/>)
+
+
+const mapStateToProps = state => ({data:state.flowsData})
+
+export default connect(
+    mapStateToProps,
+)((props)=>props.data.map(i=><FlowPanel data={i}/>))

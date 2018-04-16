@@ -1,4 +1,4 @@
-import {React,elem} from '@/common/react/Prelude';
+import {React} from '@/common/react/Prelude';
 import Flow from '@/component/element/Flow'
 
 
