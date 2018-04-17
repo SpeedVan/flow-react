@@ -1,3 +1,8 @@
+/**
+ * 这函数是json扩展/合并函数，相同key后面覆盖前面，
+ * {A:a,B:b}->{B:b1, C:c}->{A:a,B:b1,C:c}
+ * @returns {*}
+ */
 const jsonExtend = function(){
     if(arguments.length===1) return arguments[0];
     else if(arguments.length===2) return jsonExtendForOne(arguments[0],arguments[1]);
@@ -14,7 +19,13 @@ const jsonExtendOverOne = function(){
     }
     return result;
 }
+//
 
+/**
+ * 柯里化json映射函数，把json的key、value对{key,val}，通过高阶f映射新的{key1,val1}，返回新的json
+ * ({key,val})=>({key:A,val:B})  -> {key:val} -> {A:B}
+ * @param f
+ */
 const jsonMap = f => json =>{
     var result = {}
     for(var k in json){
@@ -74,6 +85,11 @@ const jsonInc = (json, key) => {
     return json;
 }
 
+/**
+ * 这种通过全解析来判断是否json，对于大json是相当耗时的
+ * @param jsonStr
+ * @returns {boolean}
+ */
 const isJson = jsonStr => {
     if (typeof jsonStr === 'string') {
         try {
