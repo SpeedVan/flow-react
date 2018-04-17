@@ -7,8 +7,9 @@ import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
 
-import {separate} from '@/common/collection/index';
-import {jsonMap} from '@/common/json/index';
+import {separate} from '@/common/collection';
+import {jsonCondReturn} from '@/common/json';
+import AllEvents from '@/component/reducer';
 
 const defaultData = [{
         traceId:0,
@@ -192,45 +193,9 @@ const initFlowData = data => {
     return {...props, nodes:jsonData, arrows:arrowsJsonData}
 }
 
-const reducer = (state={flowsData:defaultData.map(i=>initFlowData(i))}, action) =>{
-    switch (action.type) {
-        // case "NODE_CLICK": alert(action.payload.id);return state;
-        case "NODE_MOUSE_DOWN": return mountFollowMouse(state, action.payload);
-        case "NODE_MOUSE_UP": return unmountFollowMouse(state, action.payload);
-        case "NODE_MOUSE_MOVE_AFTER_DOWN": return followMouse(state, action.payload);
-        default: return state
-    }
-}
-
-const unmountFollowMouse = (state, {id}) => {
-    const {nodes, ...p} = state.flowsData[0];
-    return {flowsData:[{...p, nodes:jsonMap(kv=>kv.key === id?({key:kv.key,val:{...kv.val, isOnMouseDown: false}}):kv)(nodes)}]};
-}
-
-const mountFollowMouse = (state, {id}) => {
-    const {nodes, ...p} = state.flowsData[0];
-    return {flowsData:[{...p, nodes:jsonMap(kv=>kv.key === id?({key:kv.key,val:{...kv.val, isOnMouseDown: true}}):kv)(nodes)}]};
-}
-
-const followMouse = (state, {id, x, y}) => {
-    const {nodes, arrows, ...p} = state.flowsData[0];
-
-    let willChangeArrowsIds = new Set();
-    const addIds_SE = json => {//side_effect
-        json.from.concat(json.to).forEach(i=>willChangeArrowsIds.add(i));
-        return json;
-    }
-    const nsData = jsonMap((kv)=>kv.key === id?({key:kv.key,val:addIds_SE({...kv.val, x:x, y:y})}):kv)(nodes);
-
-    let asData ={}
-    willChangeArrowsIds.forEach(id=>{
-        const arrow = arrows[id];
-        const fromNode = nsData[arrow.from];
-        const toNode = nsData[arrow.next];
-        asData[id]={...arrow, start:{x:fromNode.x+100,y:fromNode.y+40}, end:{x:toNode.x,y:toNode.y+40}};
-    })
-
-    return {flowsData:[{...p, nodes:nsData, arrows:{...arrows, ...asData}}]};
+const reducer = (state={component:{node:false}, flowsData:defaultData.map(i=>initFlowData(i))}, action) =>{
+    const result = jsonCondReturn(kv=>action.type===kv.key && kv.val!==undefined, kv=>kv.val.reducer(state, action.payload))(AllEvents);
+    return result?result:state;
 }
 
 const store = createStore(reducer, applyMiddleware(thunk))

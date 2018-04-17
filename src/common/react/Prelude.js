@@ -1,18 +1,23 @@
-import R from 'react';
-import { createStore as createStore_, combineReducers as combineReducers_ } from 'redux';
-import { connect as connect_ } from 'react-redux'
+import React from 'react';
+import { createStore , combineReducers } from 'redux';
+import { connect } from 'react-redux'
 import { jsonKeyValMap } from '@/common/json'
+import { jsonReduce, jsonExtend } from '@/common/json/index';
 
-export const elem = R.createElement
+const elem = React.createElement;
+// const clazz = React.createClass;
 
-export const React = R
+const dispatchWapper = dispatchFunc => component => ({dispatch, ...p}) => component({...p, ...jsonKeyValMap((key,f)=>({key:key,val:f(dispatch)}))(dispatchFunc)})
 
-export const createStore = createStore_
+const myconnect = (mstp, events, mp)=>(component) => {
+    const mdtp = jsonReduce((r,{key,val})=>jsonExtend(r,val.dispatch))(events);
+    return connect(mstp, mdtp, mp)(component);
+}
 
-export const combineReducers = combineReducers_
 
-export const clazz = R.createClass
+export { React, elem}
 
-export const connect = connect_
+export { createStore,combineReducers }
 
-export const dispatchWapper = dispatchFunc => component => ({dispatch, ...p}) => component({...p, ...jsonKeyValMap((key,f)=>({key:key,val:f(dispatch)}))(dispatchFunc)})
+export { dispatchWapper, connect, myconnect }
+

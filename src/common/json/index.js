@@ -1,4 +1,19 @@
-const jsonExtend = ({...p1}, {...p2}) => ({...p1,...p2})
+const jsonExtend = function(){
+    if(arguments.length===1) return arguments[0];
+    else if(arguments.length===2) return jsonExtendForOne(arguments[0],arguments[1]);
+    else if(arguments.length>2) return jsonExtendOverOne(...arguments);
+    else return {};
+}
+
+const jsonExtendForOne = ({...p1}, {...p2}) => ({...p1,...p2})
+
+const jsonExtendOverOne = function(){
+    var result = {};
+    for(var i=0;i<arguments.length;i++){
+        result = jsonExtendForOne(result, arguments[i]);
+    }
+    return result;
+}
 
 const jsonMap = f => json =>{
     var result = {}
@@ -7,6 +22,20 @@ const jsonMap = f => json =>{
         result[key] = val
     }
     return result;
+}
+
+const jsonForeach = f => json =>{
+    for(var k in json){
+        f({key:k,val:json[k]})
+    }
+}
+
+const jsonCondReturn = (f1, f2, def=undefined) => json => {
+    for(var k in json){
+        const param = {key:k,val:json[k]};
+        if(f1(param)) return f2(param);
+    }
+    return def;
 }
 
 const jsonReduce = (f,zero={}) => json =>{
@@ -49,6 +78,8 @@ module.exports = {
     jsonExtend:jsonExtend,
     json2KeyVal:json2KeyVal,
     jsonArrayMap:jsonArrayMap,
+    jsonForeach:jsonForeach,
+    jsonCondReturn:jsonCondReturn,
     jsonMap:jsonMap,
     jsonReduce:jsonReduce,
     jsonFilter:jsonFilter,
