@@ -8,4 +8,4 @@ const mapStateToProps = state => ({data:state.flowsData})
 
 export default connect(
     mapStateToProps,
-)((props)=>props.data.map(i=><FlowPanel data={i}/>))
+)((props)=>props.data.map(i=><FlowPanel key={i.id} data={i}/>))

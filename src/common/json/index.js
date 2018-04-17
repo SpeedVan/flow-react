@@ -74,6 +74,29 @@ const jsonInc = (json, key) => {
     return json;
 }
 
+const isJson = jsonStr => {
+    if (typeof jsonStr === 'string') {
+        try {
+            JSON.parse(jsonStr);
+            return true;
+        } catch(e) {
+            return false;
+        }
+    }
+    return false
+}
+
+const parseJson = jsonStr => {
+    if (typeof jsonStr === 'string') {
+        try {
+            return JSON.parse(jsonStr);
+        } catch(e) {
+            return false;
+        }
+    }
+    return false
+}
+
 module.exports = {
     jsonExtend:jsonExtend,
     json2KeyVal:json2KeyVal,
@@ -83,5 +106,7 @@ module.exports = {
     jsonMap:jsonMap,
     jsonReduce:jsonReduce,
     jsonFilter:jsonFilter,
-    jsonInc:jsonInc
+    jsonInc:jsonInc,
+    isJson:isJson,
+    parseJson:parseJson
 }

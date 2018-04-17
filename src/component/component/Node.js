@@ -1,4 +1,4 @@
-import { React, myconnect } from 'src/common/react/Prelude';
+import { React } from 'src/common/react/Prelude';
 import logo from './logo.svg';
 
 const nodeTemplate = {

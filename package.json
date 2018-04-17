@@ -33,7 +33,6 @@
     "promise": "8.0.1",
     "raf": "3.4.0",
     "react": "^16.2.0",
-    "react-app-rewired": "^1.4.1",
     "react-dev-utils": "^5.0.0",
     "react-dom": "^16.2.0",
     "react-redux": "^5.0.7",
@@ -54,7 +53,8 @@
     "eject": "node scripts/eject.js"
   },
   "devDependencies": {
-    "redux-devtools": "^3.4.1"
+    "redux-devtools": "^3.4.1",
+    "redux-devtools-extension": "^2.13.2"
   },
   "jest": {
     "collectCoverageFrom": [

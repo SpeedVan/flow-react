@@ -5,6 +5,7 @@ import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
+import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk'
 
 import {separate} from 'src/common/collection';
@@ -46,6 +47,7 @@ const defaultData = [{
             id:"21",
             code:"arrow001",
             type:"arrow",
+            stroke:"red",
             func:{
                 input:["R001"],
                 body:"R001.RULE0039==true",
@@ -57,6 +59,7 @@ const defaultData = [{
             id:"22",
             code:"arrow002",
             type:"arrow",
+            stroke:"#bed742",
             func:{
                 input:["R001"],
                 body:"R001.RULE0039!=true",
@@ -198,7 +201,7 @@ const reducer = (state={component:{node:false}, flowsData:defaultData.map(i=>ini
     return result?result:state;
 }
 
-const store = createStore(reducer, applyMiddleware(thunk))
+const store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk)))
 
 ReactDOM.render(
     <Provider store={store}><App /></Provider>, document.getElementById('root'));
