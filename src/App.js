@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
-import Panel from './component/panel/Panel'
-import Node from '@/component/component/Node'
+import Panel from 'src/component/panel/Panel'
+import Node from 'src/component/component/Node'
 import { connect } from 'react-redux'
 
 class App extends Component {

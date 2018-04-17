@@ -1,8 +1,8 @@
-import {React, myconnect, generateUUID} from '@/common/react/Prelude';
-// import {separate} from '@/common/collection/index';
-import Node from '@/component/element/Node';
-import Arrow from '@/component/element/Arrow';
-import {jsonArrayMap, jsonExtend} from '@/common/json/index';
+import {React, myconnect, generateUUID} from 'src/common/react/Prelude';
+// import {separate} from 'src/common/collection/index';
+import Node from 'src/component/element/Node';
+import Arrow from 'src/component/element/Arrow';
+import {jsonArrayMap, jsonExtend} from 'src/common/json/index';
 
 const Flow = ({id, traceId, data, dragEnterComponent, componentDrop, componentDragEnter, componentDragLeave})=>{
     const {nodes, arrows} = data

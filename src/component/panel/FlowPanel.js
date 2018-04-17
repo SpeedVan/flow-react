@@ -1,5 +1,5 @@
-import {React} from '@/common/react/Prelude';
-import Flow from '@/component/element/Flow'
+import {React} from 'src/common/react/Prelude';
+import Flow from 'src/component/element/Flow'
 
 
 

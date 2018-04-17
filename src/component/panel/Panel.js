@@ -1,5 +1,5 @@
 import FlowPanel from './FlowPanel';
-const {React, connect} = require('@/common/react/Prelude');
+const {React, connect} = require('src/common/react/Prelude');
 //meaning flows
 
 

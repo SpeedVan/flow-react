@@ -1,4 +1,4 @@
-const {json2KeyVal} = require('@/common/json/index');
+const {json2KeyVal} = require('src/common/json/index');
 
 const separate = (funcJSON) => arr =>{
     const kv = json2KeyVal(funcJSON);

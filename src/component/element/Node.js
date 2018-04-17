@@ -1,5 +1,5 @@
-import { React, myconnect, /*dispatchWapper*/ } from '@/common/react/Prelude';
-import { jsonMap } from '@/common/json/index';
+import { React, myconnect, /*dispatchWapper*/ } from 'src/common/react/Prelude';
+import { jsonMap } from 'src/common/json/index';
 
 const Node = ({id, width=100, height=80, text, x, y, fill="#ffffff", mouseDown, mouseUp, isOnMouseDown=false, mouseMove}) => {
     return <g id="ProcessOnG1005"  transform={"matrix(1.0,0.0,0.0,1.0," + x + "," + y + ")"} opacity="1.0" onMouseDown={()=>mouseDown({id:id})} onMouseUp={()=>mouseUp({id:id})} onMouseMove={isOnMouseDown?e=>mouseMove({id:id,e:e,width:width,height:height}):undefined}>

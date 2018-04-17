@@ -7,9 +7,9 @@ import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
 
-import {separate} from '@/common/collection';
-import {jsonCondReturn} from '@/common/json';
-import AllEvents from '@/component/reducer';
+import {separate} from 'src/common/collection';
+import {jsonCondReturn} from 'src/common/json';
+import AllEvents from 'src/component/reducer';
 
 const defaultData = [{
         traceId:0,

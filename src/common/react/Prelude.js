@@ -1,8 +1,8 @@
 import React from 'react';
 import { createStore , combineReducers } from 'redux';
 import { connect } from 'react-redux'
-import { jsonKeyValMap } from '@/common/json'
-import { jsonReduce, jsonExtend } from '@/common/json/index';
+import { jsonKeyValMap } from 'src/common/json'
+import { jsonReduce, jsonExtend } from 'src/common/json/index';
 
 const elem = React.createElement;
 // const clazz = React.createClass;
