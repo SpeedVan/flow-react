@@ -49,7 +49,8 @@ const followMouse = (state, {id, x, y}) => {
 
     let willChangeArrowsIds = new Set();
     const addIds_SE = json => {//side_effect
-        json.from.concat(json.to).forEach(i=>willChangeArrowsIds.add(i));
+        if(json.from)json.from.forEach(i=>willChangeArrowsIds.add(i));
+        if(json.to)json.to.forEach(i=>willChangeArrowsIds.add(i));
         return json;
     }
     const nsData = jsonMap((kv)=>kv.key === id?({key:kv.key,val:addIds_SE({...kv.val, x:x, y:y})}):kv)(nodes);
