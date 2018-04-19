@@ -30,7 +30,6 @@ const Flow = ({id, traceId, data, dragEnterComponent, componentDrop, componentDr
 }
 
 
-const componentDragEnter = e => ({e:e, component:"node"})
 const componentDragEnterReducer = (state, {e,component})=>{
     //todo 根据事件把拖动组件放进容数据
 
@@ -38,14 +37,12 @@ const componentDragEnterReducer = (state, {e,component})=>{
     // console.log(component);
     return state;
 }
-const componentDragLeave = identity
 const componentDragLeaveReducer = (state, e) =>{
     //todo 根据事件把指定容器中拖动数据全部清除
     return state;
 }
 
 
-const componentDrop = identity
 const componentDropReducer = (state, e)=>{
     const componentData = parseJson(e.dataTransfer.getData("Text"));
     if(componentData!==false) {
@@ -68,15 +65,15 @@ const componentDropReducer = (state, e)=>{
 export const events = {
     "COMPONENT_DRAG_ENTER": {
         reducer:componentDragEnterReducer,
-        dispatch:{componentDragEnter}
+        dispatch:{componentDragEnter:e => ({e:e, component:"node"})}
     },
     "COMPONENT_DRAG_LEAVE": {
         reducer:componentDragLeaveReducer,
-        dispatch:{componentDragLeave}
+        dispatch:{componentDragLeave:identity}
     },
     "COMPONENT_DROP":{
         reducer:componentDropReducer,
-        dispatch:{componentDrop}
+        dispatch:{componentDrop:identity}
     }
 }
 
