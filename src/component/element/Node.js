@@ -14,7 +14,7 @@ const Node = ({id, width=100, height=80, text, x, y, fill="#ffffff", mouseDown, 
             </path>
         </g>
         <g id="ProcessOnG1007" transform="matrix(1.0,0.0,0.0,1.0,0,5)">
-            <text id="ProcessOnText1008" fill="#000000" fontSize="13" x={width/2} y={height/2} fontFamily="微软雅黑" fontWeight="normal" fontStyle="normal" textDecoration="none" family="微软雅黑" textAnchor="middle" size="13">{text}</text></g>
+            <text id="ProcessOnText1008" className="noselect" fill="#000000" fontSize="13" x={width/2} y={height/2} fontFamily="微软雅黑" fontWeight="normal" fontStyle="normal" textDecoration="none" family="微软雅黑" textAnchor="middle" size="13">{text}</text></g>
     </g>
 }
 
