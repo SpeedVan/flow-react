@@ -22,7 +22,7 @@ const defaultData = [{
             id:"0",
             code:"start",
             type:"node",
-            doPercent:1,
+            schedule:1,
             x:0,
             y:100
         },{
@@ -37,7 +37,7 @@ const defaultData = [{
             type:"node",
             version:1,
             desc:"desc R001",
-            doPercent:1,
+            schedule:1,
             func:{
                 input:["P001","P002"],
                 body:"{'RULE0039':P001>1&&3>2,'RULE0089':P002>4}",
@@ -88,7 +88,7 @@ const defaultData = [{
             type:"node",
             version:10,
             desc:"desc T002",
-            doPercent:0.15,
+            schedule:0.15,
             func:{
                 input:["R001"],
                 body:"R001.RULE0039!=true?0:1",
