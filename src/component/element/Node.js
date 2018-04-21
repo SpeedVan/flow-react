@@ -10,7 +10,7 @@ const Node = ({id, width=100, height=80, text, x, y, fill="#ffffff", mouseDown, 
         <g id="animate">
             <path id="ProcessOnPath1008"
                   d={"M0.0 5.0Q0.0 0.0 5.0 0.0L"+(width-5)+" 0.0Q"+width+" 0.0 "+width+" 5.0L"+width+" "+(height-5)+"Q"+width+" "+height+" "+(width-5)+" "+height+"L5.0 "+height+"Q0.0 "+height+" 0.0 "+(height-5)+"L0.0 5.0Z"}
-                  stroke="#858585" strokeWidth="2.0" strokeDasharray={"40%"} strokeDashoffset={(40*(1-schedule))+"%"} opacity="1.0" fill={fill}>
+                  stroke="#858585" strokeWidth="2.0" strokeDasharray={"40%"} strokeDashoffset={(40*(1-(schedule||0)))+"%"} opacity="1.0" fill={fill}>
                 {/*<animate attributeName="stroke-dashoffset" from="40%" to="0%" begin="0s" dur="5s" repeatCount="indefinite" />*/}
             </path>
             <Schedule x={75} y={5} schedule={schedule} />

@@ -29,6 +29,7 @@ const defaultData = [{
             id:"11",
             code:"arrow003",
             type:"arrow",
+            schedule:1,
             from:"0",
             next:"2"
         },{
@@ -49,7 +50,7 @@ const defaultData = [{
             id:"21",
             code:"arrow001",
             type:"arrow",
-            stroke:"red",
+            schedule:1,
             func:{
                 input:["R001"],
                 body:"R001.RULE0039==true",
@@ -61,7 +62,7 @@ const defaultData = [{
             id:"22",
             code:"arrow002",
             type:"arrow",
-            stroke:"#bed742",
+            schedule:1,
             func:{
                 input:["R001"],
                 body:"R001.RULE0039!=true",
@@ -75,6 +76,7 @@ const defaultData = [{
             type:"node",
             version:3,
             desc:"desc T001",
+            schedule:"fail",
             func:{
                 input:["R001"],
                 body:"R001.RULE0039!=true?0:1",
