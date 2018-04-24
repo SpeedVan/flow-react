@@ -1,10 +1,11 @@
 import {React, myconnect, generateUUID, identity} from 'src/common/react/Prelude';
 import Node from 'src/component/element/Node';
 import Arrow from 'src/component/element/Arrow';
-import { jsonArrayMap, jsonExtend, parseJson, jsonMap } from 'src/common/json';
+import { jsonExtend, parseJson } from 'src/common/json';
+import { separate } from 'src/common/collection'
 
 const Flow = ({id, traceId, data, dragEnterComponent, componentDrop, componentDragEnter, componentDragLeave, mouseUp, mouseMove})=>{
-    const {nodes, arrows} = data
+    const {nodes, arrows, select} = data;
     return <div>
         <svg onDragOver={e=>{e.preventDefault();}} onDrop={componentDrop}  onDragEnter={e=>componentDragEnter} onDragLeave={componentDragLeave} onMouseUp={mouseUp} onMouseMove={mouseMove}
              xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" id={id+"#"+traceId} viewBox="-5.0 -5.0 1200.0 400.0" width="1200.0" height="400.0">
@@ -22,12 +23,12 @@ const Flow = ({id, traceId, data, dragEnterComponent, componentDrop, componentDr
             <g id="ProcessOnG1002" x={0} y={0}>
                 <g id="ProcessOnG1004">
                     {
-                        jsonArrayMap(({key,val})=><Node id={key} key={key} {...val}/>)(nodes)
+                        Array.from(nodes).map(kvArr=><Node id={kvArr[0]} key={kvArr[0]} {...kvArr[1]}/>)
                     }
                 </g>
                 <g id="ProcessOnG1009">
                     {
-                        jsonArrayMap(({key,val})=><Arrow id={key} key={key} {...val}/>)(arrows)
+                        Array.from(arrows).map(kvArr=><Arrow id={kvArr[0]} key={kvArr[0]} {...kvArr[1]}/>)
                     }
                 </g>
             </g>
@@ -60,10 +61,13 @@ const componentDropReducer = (state, e)=>{
             x: e.nativeEvent.offsetX - componentData.width / 2,
             y: e.nativeEvent.offsetY - componentData.height / 2
         });
+
+
         console.log(result);
 
         const {nodes, ...p} = state.flowsData[0];
-        return {flowsData: [{...p, nodes: jsonExtend(nodes, result)}]};
+        const newNodes = [[uuid,result]].concat(nodes.entries);
+        return {flowsData: [{...p, nodes: new Map(newNodes)}]};
     }else{
         return state;
     }
@@ -71,36 +75,41 @@ const componentDropReducer = (state, e)=>{
 
 const unmountFollowMouse = (state, e)=>{
     const {select, ...p} = state.flowsData[0];
-    return {flowsData:[{...p, select:{}}]};
+
+    return {flowsData:[{...p, select:e.nativeEvent.shiftKey?select:{}}]};
 }
 
-const followMouse = (state, {x, y}) => {
+const followMouse = (state, {e, x, y}) => {
     const {select, nodes, arrows, ...p} = state.flowsData[0];
 
-    if(Object.keys(select).length>0) {
+    if(Object.keys(select).length>0&& e.nativeEvent.which===1) {
         let willChangeArrowsIds = new Set();
         const addIds_SE = json => {//side_effect
             if (json.from) json.from.forEach(i => willChangeArrowsIds.add(i));
             if (json.to) json.to.forEach(i => willChangeArrowsIds.add(i));
             return json;
         }
-        const nsData = jsonMap((kv) => Object.keys(select).indexOf(kv.key) !== -1 ?
-            ({key: kv.key, val: addIds_SE({...kv.val, x: x - select[kv.key].ox, y: y - select[kv.key].oy})})
-            : kv)(nodes);
+        const nsData = new Map(
+            Array.from(nodes).map(
+                kvArr => Object.keys(select).indexOf(kvArr[0]) !== -1 ?
+                    [kvArr[0], addIds_SE({...kvArr[1], x: x - select[kvArr[0]].ox, y: y - select[kvArr[0]].oy})]
+                    :kvArr
+            )
+        )
 
-        let asData = {}
+        let asData = []
         willChangeArrowsIds.forEach(id => {
-            const arrow = arrows[id];
-            const fromNode = nsData[arrow.from];
-            const toNode = nsData[arrow.next];
-            asData[id] = {
+            const arrow = arrows.get(id);
+            const fromNode = nsData.get(arrow.from);
+            const toNode = nsData.get(arrow.next);
+            asData.push([id, {
                 ...arrow,
                 start: {x: fromNode.x + 100, y: fromNode.y + 40},
                 end: {x: toNode.x, y: toNode.y + 40}
-            };
+            }]);
         })
 
-        return {flowsData: [{...p, nodes: nsData, arrows: {...arrows, ...asData}, select: select}]};
+        return {flowsData: [{...p, nodes: nsData, arrows: new Map(Array.from(arrows).concat(asData)), select: select}]};
     } else {
         return state
     }
@@ -125,7 +134,7 @@ export const events = {
     },
     "FLOW_NODE_MOUSE_MOVE_AFTER_DOWN": {
         reducer:followMouse,
-        dispatch:{mouseMove:(e)=>({x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY})}
+        dispatch:{mouseMove:(e)=>({e:e, x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY})}
     }
 }
 
