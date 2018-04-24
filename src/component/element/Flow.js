@@ -1,12 +1,12 @@
 import {React, myconnect, generateUUID, identity} from 'src/common/react/Prelude';
 import Node from 'src/component/element/Node';
 import Arrow from 'src/component/element/Arrow';
-import { jsonArrayMap, jsonExtend, parseJson } from 'src/common/json';
+import { jsonArrayMap, jsonExtend, parseJson, jsonMap } from 'src/common/json';
 
-const Flow = ({id, traceId, data, dragEnterComponent, componentDrop, componentDragEnter, componentDragLeave})=>{
+const Flow = ({id, traceId, data, dragEnterComponent, componentDrop, componentDragEnter, componentDragLeave, mouseUp, mouseMove})=>{
     const {nodes, arrows} = data
     return <div>
-        <svg onDragOver={e=>{e.preventDefault();}} onDrop={componentDrop}  onDragEnter={e=>componentDragEnter} onDragLeave={componentDragLeave}
+        <svg onDragOver={e=>{e.preventDefault();}} onDrop={componentDrop}  onDragEnter={e=>componentDragEnter} onDragLeave={componentDragLeave} onMouseUp={mouseUp} onMouseMove={mouseMove}
              xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" id={id+"#"+traceId} viewBox="-5.0 -5.0 1200.0 400.0" width="1200.0" height="400.0">
             <defs id="ProcessOnDefs1001">
                 <marker id="arrowHeadWill" markerUnits="userSpaceOnUse" orient="auto" markerWidth="16.23606797749979" markerHeight="10.550836550532098" viewBox="-1.0 -1.3763819204711736 16.23606797749979 10.550836550532098" refX="14" refY="3.8990363547948754">
@@ -37,11 +37,12 @@ const Flow = ({id, traceId, data, dragEnterComponent, componentDrop, componentDr
 
 
 const componentDragEnterReducer = (state, {e,component})=>{
+    const {select, ...p} = state.flowsData[0];
     //todo 根据事件把拖动组件放进容数据
 
     // console.log(e.dataTransfer.getData("Text"));
     // console.log(component);
-    return state;
+    return {flowsData: [{...p, select: []}]};
 }
 const componentDragLeaveReducer = (state, e) =>{
     //todo 根据事件把指定容器中拖动数据全部清除
@@ -68,6 +69,43 @@ const componentDropReducer = (state, e)=>{
     }
 }
 
+const unmountFollowMouse = (state, e)=>{
+    const {select, ...p} = state.flowsData[0];
+    return {flowsData:[{...p, select:{}}]};
+}
+
+const followMouse = (state, {x, y}) => {
+    const {select, nodes, arrows, ...p} = state.flowsData[0];
+
+    if(Object.keys(select).length>0) {
+        let willChangeArrowsIds = new Set();
+        const addIds_SE = json => {//side_effect
+            if (json.from) json.from.forEach(i => willChangeArrowsIds.add(i));
+            if (json.to) json.to.forEach(i => willChangeArrowsIds.add(i));
+            return json;
+        }
+        const nsData = jsonMap((kv) => Object.keys(select).indexOf(kv.key) !== -1 ?
+            ({key: kv.key, val: addIds_SE({...kv.val, x: x - select[kv.key].ox, y: y - select[kv.key].oy})})
+            : kv)(nodes);
+
+        let asData = {}
+        willChangeArrowsIds.forEach(id => {
+            const arrow = arrows[id];
+            const fromNode = nsData[arrow.from];
+            const toNode = nsData[arrow.next];
+            asData[id] = {
+                ...arrow,
+                start: {x: fromNode.x + 100, y: fromNode.y + 40},
+                end: {x: toNode.x, y: toNode.y + 40}
+            };
+        })
+
+        return {flowsData: [{...p, nodes: nsData, arrows: {...arrows, ...asData}, select: select}]};
+    } else {
+        return state
+    }
+}
+
 export const events = {
     "COMPONENT_DRAG_ENTER": {
         reducer:componentDragEnterReducer,
@@ -80,6 +118,14 @@ export const events = {
     "COMPONENT_DROP":{
         reducer:componentDropReducer,
         dispatch:{componentDrop:identity}
+    },
+    "FLOW_MOUSE_UP": {
+        reducer:unmountFollowMouse,
+        dispatch:{mouseUp:identity}
+    },
+    "FLOW_NODE_MOUSE_MOVE_AFTER_DOWN": {
+        reducer:followMouse,
+        dispatch:{mouseMove:(e)=>({x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY})}
     }
 }
 

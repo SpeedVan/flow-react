@@ -198,7 +198,7 @@ const initFlowData = data => {
         return r;
     },{})//
 
-    return {...props, nodes:jsonData, arrows:arrowsJsonData}
+    return {...props, nodes:jsonData, arrows:arrowsJsonData, select:{}}
 }
 
 const reducer = (state={component:{node:false}, flowsData:defaultData.map(i=>initFlowData(i))}, action) =>{

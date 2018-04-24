@@ -113,6 +113,12 @@ const parseJson = jsonStr => {
     return false
 }
 
+const tuple2json = (key,val)=>{
+    var result = {}
+    result[key] = val;
+    return result;
+}
+
 module.exports = {
     jsonExtend:jsonExtend,
     json2KeyVal:json2KeyVal,
@@ -124,5 +130,6 @@ module.exports = {
     jsonFilter:jsonFilter,
     jsonInc:jsonInc,
     isJson:isJson,
-    parseJson:parseJson
+    parseJson:parseJson,
+    tuple2json:tuple2json
 }
