@@ -6,6 +6,7 @@ import { separate } from 'src/common/collection'
 
 const Flow = ({id, traceId, data, dragEnterComponent, componentDrop, componentDragEnter, componentDragLeave, mouseUp, mouseMove})=>{
     const {nodes, arrows, select} = data;
+    const selectedKeys = Object.keys(select);
     return <div>
         <svg onDragOver={e=>{e.preventDefault();}} onDrop={componentDrop}  onDragEnter={e=>componentDragEnter} onDragLeave={componentDragLeave} onMouseUp={mouseUp} onMouseMove={mouseMove}
              xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" id={id+"#"+traceId} viewBox="-5.0 -5.0 1200.0 400.0" width="1200.0" height="400.0">
@@ -23,7 +24,7 @@ const Flow = ({id, traceId, data, dragEnterComponent, componentDrop, componentDr
             <g id="ProcessOnG1002" x={0} y={0}>
                 <g id="ProcessOnG1004">
                     {
-                        Array.from(nodes).map(kvArr=><Node id={kvArr[0]} key={kvArr[0]} {...kvArr[1]}/>)
+                        Array.from(nodes).map(kvArr=><Node id={kvArr[0]} key={kvArr[0]} {...kvArr[1]} selected={selectedKeys.indexOf(kvArr[0])!==-1}/>)
                     }
                 </g>
                 <g id="ProcessOnG1009">
@@ -61,10 +62,6 @@ const componentDropReducer = (state, e)=>{
             x: e.nativeEvent.offsetX - componentData.width / 2,
             y: e.nativeEvent.offsetY - componentData.height / 2
         });
-
-
-        console.log(result);
-
         const {nodes, ...p} = state.flowsData[0];
         const newNodes = [[uuid,result]].concat(nodes.entries);
         return {flowsData: [{...p, nodes: new Map(newNodes)}]};
@@ -75,8 +72,9 @@ const componentDropReducer = (state, e)=>{
 
 const unmountFollowMouse = (state, e)=>{
     const {select, ...p} = state.flowsData[0];
-
+    // const onlyOne = Object.keys(select).length===1;
     return {flowsData:[{...p, select:e.nativeEvent.shiftKey?select:{}}]};
+    // return state;
 }
 
 const followMouse = (state, {e, x, y}) => {
