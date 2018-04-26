@@ -25,6 +25,7 @@ const Node = ({id, width=100, height=80, text, x, y, fill="#ffffff", mouseDown, 
 }
 
 const mountFollowMouse = (state, {id, e}) => {
+    e.stopPropagation();
     const {select, nodes, ...p} = state.flowsData[0];
     //通过排序（越后图层越高），实现提顶
     const nodesData = Array.from(nodes)
@@ -42,13 +43,13 @@ const mountFollowMouse = (state, {id, e}) => {
     //为了实现在node上的点击位置跟随鼠标（非中点跟随），做位置记录准备
     const {offsetX, offsetY, target} = e.nativeEvent;
     const matrix = target.parentElement.transform.baseVal.consolidate().matrix;
-    //ox和oy为相对于node点击的位置
+    //ox和oy为相对于node所在xy的点击位置
     const ox = offsetX-matrix.e;
     const oy = offsetY-matrix.f;
 
     // const onlyOne = Object.keys(select).length === 1;
     const newSelect = jsonMap(({key,val})=>({key:key,val:{ox:offsetX-newNodes.get(key).x, oy:offsetY-newNodes.get(key).y}}))(select);
-    const shiftSelect = jsonExtend(e.nativeEvent.shiftKey?newSelect:{},tuple2json(id,{ox:ox, oy:oy}));
+    const shiftSelect = jsonExtend(e.nativeEvent.shiftKey||Object.keys(select).indexOf(id)!==-1?newSelect:{},tuple2json(id,{ox:ox, oy:oy}));
 
 
     return {flowsData:[{...p, nodes:newNodes, select:shiftSelect}]};

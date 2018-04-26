@@ -4,11 +4,11 @@ import Arrow from 'src/component/element/Arrow';
 import { jsonExtend, parseJson } from 'src/common/json';
 import { separate } from 'src/common/collection'
 
-const Flow = ({id, traceId, data, dragEnterComponent, componentDrop, componentDragEnter, componentDragLeave, mouseUp, mouseMove})=>{
+const Flow = ({id, traceId, data, dragEnterComponent, componentDrop, componentDragEnter, componentDragLeave, mouseUp, mouseDown, mouseMove})=>{
     const {nodes, arrows, select} = data;
     const selectedKeys = Object.keys(select);
     return <div>
-        <svg onDragOver={e=>{e.preventDefault();}} onDrop={componentDrop}  onDragEnter={e=>componentDragEnter} onDragLeave={componentDragLeave} onMouseUp={mouseUp} onMouseMove={mouseMove}
+        <svg onDragOver={e=>{e.preventDefault();}} onDrop={componentDrop}  onDragEnter={e=>componentDragEnter} onDragLeave={componentDragLeave} onMouseUp={mouseUp} onMouseDown={mouseDown} onMouseMove={mouseMove}
              xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" id={id+"#"+traceId} viewBox="-5.0 -5.0 1200.0 400.0" width="1200.0" height="400.0">
             <defs id="ProcessOnDefs1001">
                 <marker id="arrowHeadWill" markerUnits="userSpaceOnUse" orient="auto" markerWidth="16.23606797749979" markerHeight="10.550836550532098" viewBox="-1.0 -1.3763819204711736 16.23606797749979 10.550836550532098" refX="14" refY="3.8990363547948754">
@@ -71,10 +71,10 @@ const componentDropReducer = (state, e)=>{
 }
 
 const unmountFollowMouse = (state, e)=>{
-    const {select, ...p} = state.flowsData[0];
+    // const {select, ...p} = state.flowsData[0];
     // const onlyOne = Object.keys(select).length===1;
-    return {flowsData:[{...p, select:e.nativeEvent.shiftKey?select:{}}]};
-    // return state;
+    // return {flowsData:[{...p, select:e.nativeEvent.shiftKey?select:{}}]};
+    return state;
 }
 
 const followMouse = (state, {e, x, y}) => {
@@ -133,6 +133,13 @@ export const events = {
     "FLOW_NODE_MOUSE_MOVE_AFTER_DOWN": {
         reducer:followMouse,
         dispatch:{mouseMove:(e)=>({e:e, x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY})}
+    },
+    "FLOW_MOUSE_DOWN":{
+        reducer:(state, e)=>{
+            const {select, ...p} = state.flowsData[0];
+            return ({flowsData:[{...p, select:{}}]})
+        },
+        dispatch:{mouseDown:identity}
     }
 }
 
