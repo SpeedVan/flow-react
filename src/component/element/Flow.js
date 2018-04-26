@@ -5,11 +5,11 @@ import { jsonExtend, parseJson } from 'src/common/json';
 import { separate } from 'src/common/collection'
 
 const Flow = ({id, traceId, data, dragEnterComponent, componentDrop, componentDragEnter, componentDragLeave, mouseUp, mouseDown, mouseMove})=>{
-    const {nodes, arrows, select} = data;
+    const {nodes, arrows, select, canvasXY} = data;
     const selectedKeys = Object.keys(select);
-    return <div>
+    return <div style={{overflow:"scroll",borderStyle: "solid", borderWidth: "5px"}} width="1000.0" height="100.0">
         <svg onDragOver={e=>{e.preventDefault();}} onDrop={componentDrop}  onDragEnter={e=>componentDragEnter} onDragLeave={componentDragLeave} onMouseUp={mouseUp} onMouseDown={mouseDown} onMouseMove={mouseMove}
-             xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" id={id+"#"+traceId} viewBox="-5.0 -5.0 1200.0 400.0" width="1200.0" height="400.0">
+             xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" id={id+"#"+traceId} viewBox={canvasXY.x+" "+canvasXY.y+" 1000.0 400.0"} width="1000.0" height="400.0" >
             <defs id="ProcessOnDefs1001">
                 <marker id="arrowHeadWill" markerUnits="userSpaceOnUse" orient="auto" markerWidth="16.23606797749979" markerHeight="10.550836550532098" viewBox="-1.0 -1.3763819204711736 16.23606797749979 10.550836550532098" refX="14" refY="3.8990363547948754">
                     <path id="ProcessOnPath1012" d="M12.0 3.8990363547948754L0.0 7.798072709589751V0.0Z" stroke="#e3e3e3" strokeWidth="2.0" fill="#e3e3e3" transform="matrix(1.0,0.0,0.0,1.0,0.0,0.0)"/>
@@ -80,7 +80,11 @@ const unmountFollowMouse = (state, e)=>{
 const followMouse = (state, {e, x, y}) => {
     const {select, nodes, arrows, ...p} = state.flowsData[0];
 
-    if(Object.keys(select).length>0&& e.nativeEvent.which===1) {
+    if(e.nativeEvent.altKey&& e.nativeEvent.which===1){
+        const { mouseDownPoint, canvasXY, ...p } = state.flowsData[0];
+        const { offsetX, offsetY } = e.nativeEvent;
+        return {flowsData:[{ ...p, canvasXY:{x:offsetX-mouseDownPoint.x,y:offsetY-mouseDownPoint.y},mouseDownPoint:mouseDownPoint }]}
+    }else if(Object.keys(select).length>0&& e.nativeEvent.which===1) {
         let willChangeArrowsIds = new Set();
         const addIds_SE = json => {//side_effect
             if (json.from) json.from.forEach(i => willChangeArrowsIds.add(i));
@@ -136,8 +140,9 @@ export const events = {
     },
     "FLOW_MOUSE_DOWN":{
         reducer:(state, e)=>{
-            const {select, ...p} = state.flowsData[0];
-            return ({flowsData:[{...p, select:{}}]})
+            const {offsetX, offsetY} = e.nativeEvent;
+            const {select, canvasXY, ...p} = state.flowsData[0];
+            return ({flowsData:[{...p, select:{}, canvasXY:canvasXY, mouseDownPoint:{x:offsetX-canvasXY.x, y:offsetY-canvasXY.y}}]})
         },
         dispatch:{mouseDown:identity}
     }

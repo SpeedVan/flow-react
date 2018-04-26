@@ -197,7 +197,7 @@ const initFlowData = data => {
         return r.set(i["id"],i);
     },new Map())//
 
-    return {...props, nodes:jsonData, arrows:arrowsJsonData, select:{}}
+    return {...props, nodes:jsonData, arrows:arrowsJsonData, select:{}, canvasXY:{x:0, y:0}, mouseDownPoint:{x:0, y:0}}
 }
 
 const reducer = (state={component:{node:false}, flowsData:defaultData.map(i=>initFlowData(i))}, action) =>{
