@@ -83,7 +83,7 @@ const followMouse = (state, {e, x, y}) => {
     if(e.nativeEvent.altKey&& e.nativeEvent.which===1){
         const { mouseDownPoint, canvasXY, ...p } = state.flowsData[0];
         const { offsetX, offsetY } = e.nativeEvent;
-        return {flowsData:[{ ...p, canvasXY:{x:offsetX-mouseDownPoint.x,y:offsetY-mouseDownPoint.y},mouseDownPoint:mouseDownPoint }]}
+        return {flowsData:[{ ...p, canvasXY:{x:mouseDownPoint.x-offsetX,y:mouseDownPoint.y-offsetY},mouseDownPoint:mouseDownPoint }]}
     }else if(Object.keys(select).length>0&& e.nativeEvent.which===1) {
         let willChangeArrowsIds = new Set();
         const addIds_SE = json => {//side_effect
@@ -142,7 +142,7 @@ export const events = {
         reducer:(state, e)=>{
             const {offsetX, offsetY} = e.nativeEvent;
             const {select, canvasXY, ...p} = state.flowsData[0];
-            return ({flowsData:[{...p, select:{}, canvasXY:canvasXY, mouseDownPoint:{x:offsetX-canvasXY.x, y:offsetY-canvasXY.y}}]})
+            return ({flowsData:[{...p, select:{}, canvasXY:canvasXY, mouseDownPoint:{x:offsetX+canvasXY.x, y:offsetY+canvasXY.y}}]})
         },
         dispatch:{mouseDown:identity}
     }
